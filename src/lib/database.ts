@@ -1,27 +1,32 @@
 import { supabase, SiteContent, Service, ContactInfo } from './supabase'
 
 // Site Content operations
-export async function getSiteContent(section?: string) {
-  let query = supabase
-    .from('site_content')
-    .select('*')
-    .order('order_index', { ascending: true })
+export async function getSiteContent(section?: string): Promise<SiteContent[]> {
+  try {
+    let query = supabase
+      .from('site_content')
+      .select('*')
+      .order('order_index', { ascending: true })
 
-  if (section) {
-    query = query.eq('section', section)
-  }
+    if (section) {
+      query = query.eq('section', section)
+    }
 
-  const { data, error } = await query
+    const { data, error } = await query
 
-  if (error) {
-    console.error('Error fetching site content:', error)
+    if (error) {
+      console.error('Error fetching site content:', error)
+      return []
+    }
+
+    return data as SiteContent[]
+  } catch (err) {
+    console.error('Unexpected error fetching site content:', err)
     return []
   }
-
-  return data as SiteContent[]
 }
 
-export async function updateSiteContent(id: string, updates: Partial<SiteContent>) {
+export async function updateSiteContent(id: string, updates: Partial<SiteContent>): Promise<SiteContent> {
   const { data, error } = await supabase
     .from('site_content')
     .update(updates)
@@ -36,7 +41,7 @@ export async function updateSiteContent(id: string, updates: Partial<SiteContent
   return data[0] as SiteContent
 }
 
-export async function createSiteContent(content: Omit<SiteContent, 'id' | 'created_at' | 'updated_at'>) {
+export async function createSiteContent(content: Omit<SiteContent, 'id' | 'created_at' | 'updated_at'>): Promise<SiteContent> {
   const { data, error } = await supabase
     .from('site_content')
     .insert(content)
@@ -51,27 +56,32 @@ export async function createSiteContent(content: Omit<SiteContent, 'id' | 'creat
 }
 
 // Services operations
-export async function getServices(activeOnly: boolean = true) {
-  let query = supabase
-    .from('services')
-    .select('*')
-    .order('order_index', { ascending: true })
+export async function getServices(activeOnly: boolean = true): Promise<Service[]> {
+  try {
+    let query = supabase
+      .from('services')
+      .select('*')
+      .order('order_index', { ascending: true })
 
-  if (activeOnly) {
-    query = query.eq('active', true)
-  }
+    if (activeOnly) {
+      query = query.eq('active', true)
+    }
 
-  const { data, error } = await query
+    const { data, error } = await query
 
-  if (error) {
-    console.error('Error fetching services:', error)
+    if (error) {
+      console.error('Error fetching services:', error)
+      return []
+    }
+
+    return data as Service[]
+  } catch (err) {
+    console.error('Unexpected error fetching services:', err)
     return []
   }
-
-  return data as Service[]
 }
 
-export async function updateService(id: string, updates: Partial<Service>) {
+export async function updateService(id: string, updates: Partial<Service>): Promise<Service> {
   const { data, error } = await supabase
     .from('services')
     .update(updates)
@@ -86,7 +96,7 @@ export async function updateService(id: string, updates: Partial<Service>) {
   return data[0] as Service
 }
 
-export async function createService(service: Omit<Service, 'id' | 'created_at' | 'updated_at'>) {
+export async function createService(service: Omit<Service, 'id' | 'created_at' | 'updated_at'>): Promise<Service> {
   const { data, error } = await supabase
     .from('services')
     .insert(service)
@@ -100,7 +110,7 @@ export async function createService(service: Omit<Service, 'id' | 'created_at' |
   return data[0] as Service
 }
 
-export async function deleteService(id: string) {
+export async function deleteService(id: string): Promise<void> {
   const { error } = await supabase
     .from('services')
     .delete()
@@ -113,21 +123,26 @@ export async function deleteService(id: string) {
 }
 
 // Contact Info operations
-export async function getContactInfo() {
-  const { data, error } = await supabase
-    .from('contact_info')
-    .select('*')
-    .order('field_name', { ascending: true })
+export async function getContactInfo(): Promise<ContactInfo[]> {
+  try {
+    const { data, error } = await supabase
+      .from('contact_info')
+      .select('*')
+      .order('field_name', { ascending: true })
 
-  if (error) {
-    console.error('Error fetching contact info:', error)
+    if (error) {
+      console.error('Error fetching contact info:', error)
+      return []
+    }
+
+    return data as ContactInfo[]
+  } catch (err) {
+    console.error('Unexpected error fetching contact info:', err)
     return []
   }
-
-  return data as ContactInfo[]
 }
 
-export async function updateContactInfo(id: string, updates: Partial<ContactInfo>) {
+export async function updateContactInfo(id: string, updates: Partial<ContactInfo>): Promise<ContactInfo> {
   const { data, error } = await supabase
     .from('contact_info')
     .update(updates)
@@ -142,18 +157,5 @@ export async function updateContactInfo(id: string, updates: Partial<ContactInfo
   return data[0] as ContactInfo
 }
 
-export async function getContactInfoByField(fieldName: string) {
+export async function getContactInfoByField(fieldName: string): Promise<ContactInfo | null> {
   const { data, error } = await supabase
-    .from('contact_info')
-    .select('*')
-    .eq('field_name', fieldName)
-    .single()
-
-  if (error) {
-    console.error('Error fetching contact info by field:', error)
-    return null
-  }
-
-  return data as ContactInfo
-}
-
