@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Lock, Mail, Eye, EyeOff, AlertCircle } from 'lucide-react'
+import { Lock, Mail, Eye, EyeOff } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { signInWithEmail } from '@/lib/auth'
 import { useAuthContext } from '@/context/AuthContext'
+import { toast } from 'sonner'
 
 export default function AdminLogin() {
   const router = useRouter()
@@ -16,7 +17,6 @@ export default function AdminLogin() {
   })
   const [showPassword, setShowPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState('')
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -31,19 +31,18 @@ export default function AdminLogin() {
       ...prev,
       [name]: value
     }))
-    setError('')
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    setError('')
 
     try {
       await signInWithEmail(formData.email, formData.password)
+      toast.success('Sesión iniciada correctamente')
       router.push('/admin')
     } catch (err: any) {
-      setError(err.message || 'Error al iniciar sesión')
+      toast.error(err.message || 'Error al iniciar sesión')
     } finally {
       setIsSubmitting(false)
     }
@@ -73,13 +72,6 @@ export default function AdminLogin() {
         </div>
         
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center">
-              <AlertCircle className="h-5 w-5 text-red-600 mr-3" />
-              <span className="text-red-700">{error}</span>
-            </div>
-          )}
-          
           <div className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
@@ -98,7 +90,7 @@ export default function AdminLogin() {
                   value={formData.email}
                   onChange={handleInputChange}
                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
-                  placeholder="admin@example.com"
+                  placeholder="tuemail@ejemplo.com"
                 />
               </div>
             </div>
@@ -166,18 +158,6 @@ export default function AdminLogin() {
             </button>
           </div>
         </form>
-
-        {/* Development Info */}
-        <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <h3 className="text-sm font-medium text-blue-900 mb-2">Información de Desarrollo</h3>
-          <p className="text-xs text-blue-700 mb-2">
-            Credenciales por defecto (cambiar en producción):
-          </p>
-          <div className="text-xs text-blue-600 font-mono">
-            <div>Email: admin@example.com</div>
-            <div>Contraseña: admin123</div>
-          </div>
-        </div>
       </div>
     </div>
   )
