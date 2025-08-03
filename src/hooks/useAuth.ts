@@ -1,57 +1,16 @@
-import { useState, useEffect } from 'react'
-import { User } from '@supabase/supabase-js'
-import { createSupabaseClient } from '@/lib/supabase'
-import { getCurrentUser, isAdminEmail } from '@/lib/auth'
+import { useAuthContext } from '@/context/AuthContext'
 
 export function useAuth() {
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [isAdmin, setIsAdmin] = useState(false)
+  const { user, session, loading } = useAuthContext()
 
-  useEffect(() => {
-    const supabase = createSupabaseClient()
-
-    // Get initial session
-    const getInitialSession = async () => {
-      try {
-        const currentUser = await getCurrentUser()
-        setUser(currentUser)
-        setIsAdmin(currentUser ? isAdminEmail(currentUser.email || '') : false)
-      } catch (error) {
-        console.error('Error getting initial session:', error)
-        setUser(null)
-        setIsAdmin(false)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    getInitialSession()
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (session?.user) {
-          setUser(session.user)
-          setIsAdmin(isAdminEmail(session.user.email || ''))
-        } else {
-          setUser(null)
-          setIsAdmin(false)
-        }
-        setLoading(false)
-      }
-    )
-
-    return () => {
-      subscription.unsubscribe()
-    }
-  }, [])
+  const isAuthenticated = !!user
+  const isAdmin = user?.email === (process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'admin@example.com')
 
   return {
     user,
+    session,
     loading,
-    isAdmin,
-    isAuthenticated: !!user
+    isAuthenticated,
+    isAdmin
   }
 }
-

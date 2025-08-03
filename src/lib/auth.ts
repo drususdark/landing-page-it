@@ -2,7 +2,7 @@ import { createSupabaseClient } from './supabase'
 
 export async function signInWithEmail(email: string, password: string) {
   const supabase = createSupabaseClient()
-  
+
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password
@@ -17,41 +17,25 @@ export async function signInWithEmail(email: string, password: string) {
 
 export async function signOut() {
   const supabase = createSupabaseClient()
-  
   const { error } = await supabase.auth.signOut()
-  
-  if (error) {
-    throw error
-  }
+  if (error) throw error
 }
 
 export async function getCurrentUser() {
   const supabase = createSupabaseClient()
-  
   const { data: { user }, error } = await supabase.auth.getUser()
-  
-  if (error) {
-    throw error
-  }
-  
+  if (error) throw error
   return user
 }
 
 export async function getSession() {
   const supabase = createSupabaseClient()
-  
   const { data: { session }, error } = await supabase.auth.getSession()
-  
-  if (error) {
-    throw error
-  }
-  
+  if (error) throw error
   return session
 }
 
-// Simple admin check - in production, you'd want more sophisticated role management
 export function isAdminEmail(email: string): boolean {
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com'
+  const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'admin@example.com'
   return email === adminEmail
 }
-
