@@ -9,18 +9,17 @@ import { useAuthContext } from '@/context/AuthContext'
 import { ContentEditor } from '@/components/admin/ContentEditor'
 import { ServicesEditor } from '@/components/admin/ServicesEditor'
 import { ContactEditor } from '@/components/admin/ContactEditor'
+import { toast } from 'sonner'  // <-- Importa toast
 
 export default function AdminDashboard() {
   const router = useRouter()
   const { isAuthenticated, isAdmin, loading, user } = useAuthContext()
   const [activeTab, setActiveTab] = React.useState('content')
 
-  // Debug info
   useEffect(() => {
     console.log('Auth status:', { isAuthenticated, isAdmin, loading, userEmail: user?.email })
   }, [isAuthenticated, isAdmin, loading, user])
 
-  // Redirect if not authenticated or not admin (esperar que loading sea falso)
   useEffect(() => {
     if (!loading) {
       if (!isAuthenticated || !isAdmin) {
@@ -32,9 +31,11 @@ export default function AdminDashboard() {
   const handleSignOut = async () => {
     try {
       await signOut()
+      toast.success('Sesión cerrada correctamente')  // <-- Toast éxito
       router.push('/admin/login')
     } catch (error) {
       console.error('Error signing out:', error)
+      toast.error('Error al cerrar sesión')  // <-- Toast error
     }
   }
 
@@ -51,7 +52,6 @@ export default function AdminDashboard() {
   }
 
   if (!isAuthenticated || !isAdmin) {
-    // Mostrar null mientras redirige
     return null
   }
 
@@ -63,7 +63,6 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
@@ -99,7 +98,6 @@ export default function AdminDashboard() {
         </div>
       </header>
 
-      {/* Navigation Tabs */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex space-x-8">
@@ -121,7 +119,6 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {activeTab === 'content' && <ContentEditor />}
         {activeTab === 'services' && <ServicesEditor />}

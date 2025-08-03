@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Lock, Mail, Eye, EyeOff } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { signInWithEmail } from '@/lib/auth'
+import { signInWithEmail, signOut } from '@/lib/auth' // Importo signOut por si lo usás
 import { useAuthContext } from '@/context/AuthContext'
 import { toast } from 'sonner'
 
@@ -40,11 +40,23 @@ export default function AdminLogin() {
     try {
       await signInWithEmail(formData.email, formData.password)
       toast.success('Sesión iniciada correctamente')
+      setFormData({ email: '', password: '' })  // Limpio el formulario
       router.push('/admin')
     } catch (err: any) {
       toast.error(err.message || 'Error al iniciar sesión')
     } finally {
       setIsSubmitting(false)
+    }
+  }
+
+  // Ejemplo de función para cerrar sesión con toast (para usar en admin dashboard o donde quieras)
+  const handleSignOut = async () => {
+    try {
+      await signOut()
+      toast.success('Sesión cerrada correctamente')
+      router.push('/admin/login')
+    } catch (error) {
+      toast.error('Error al cerrar sesión')
     }
   }
 
