@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { LogOut, Edit, Save, Plus, Trash2, Eye } from 'lucide-react'
+import { LogOut, Edit, Save, Plus, Eye } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { signOut } from '@/lib/auth'
 import { useAuthContext } from '@/context/AuthContext'
@@ -15,10 +15,17 @@ export default function AdminDashboard() {
   const { isAuthenticated, isAdmin, loading, user } = useAuthContext()
   const [activeTab, setActiveTab] = React.useState('content')
 
-  // Redirect if not authenticated or not admin
+  // Debug info
   useEffect(() => {
-    if (!loading && (!isAuthenticated || !isAdmin)) {
-      router.push('/admin/login')
+    console.log('Auth status:', { isAuthenticated, isAdmin, loading, userEmail: user?.email })
+  }, [isAuthenticated, isAdmin, loading, user])
+
+  // Redirect if not authenticated or not admin (esperar que loading sea falso)
+  useEffect(() => {
+    if (!loading) {
+      if (!isAuthenticated || !isAdmin) {
+        router.push('/admin/login')
+      }
     }
   }, [isAuthenticated, isAdmin, loading, router])
 
@@ -44,6 +51,7 @@ export default function AdminDashboard() {
   }
 
   if (!isAuthenticated || !isAdmin) {
+    // Mostrar null mientras redirige
     return null
   }
 
