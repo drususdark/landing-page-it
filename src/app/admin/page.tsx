@@ -5,14 +5,14 @@ import { useRouter } from 'next/navigation'
 import { LogOut, Edit, Save, Plus, Trash2, Eye } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { signOut } from '@/lib/auth'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuthContext } from '@/context/AuthContext'
 import { ContentEditor } from '@/components/admin/ContentEditor'
 import { ServicesEditor } from '@/components/admin/ServicesEditor'
 import { ContactEditor } from '@/components/admin/ContactEditor'
 
 export default function AdminDashboard() {
   const router = useRouter()
-  const { isAuthenticated, isAdmin, loading, user } = useAuth()
+  const { isAuthenticated, isAdmin, loading, user } = useAuthContext()
   const [activeTab, setActiveTab] = React.useState('content')
 
   // Redirect if not authenticated or not admin
@@ -122,4 +122,3 @@ export default function AdminDashboard() {
     </div>
   )
 }
-

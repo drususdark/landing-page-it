@@ -5,11 +5,11 @@ import { useRouter } from 'next/navigation'
 import { Lock, Mail, Eye, EyeOff, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { signInWithEmail } from '@/lib/auth'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuthContext } from '@/context/AuthContext'
 
 export default function AdminLogin() {
   const router = useRouter()
-  const { isAuthenticated, isAdmin, loading } = useAuth()
+  const { isAuthenticated, isAdmin, loading } = useAuthContext()
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -182,4 +182,3 @@ export default function AdminLogin() {
     </div>
   )
 }
-

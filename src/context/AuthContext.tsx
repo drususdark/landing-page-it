@@ -1,40 +1,43 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState } from 'react'
-import { createSupabaseClient } from '@/lib/supabase'
-import { Session, User } from '@supabase/supabase-js'
+import React, { createContext, useContext, useEffect, useState } from 'react'
+import { User } from '@supabase/supabase-js'
+import { supabase } from '@/lib/supabase'
+import { isAdminEmail } from '@/lib/auth'
 
 interface AuthContextType {
   user: User | null
-  session: Session | null
+  isAuthenticated: boolean
+  isAdmin: boolean
   loading: boolean
 }
 
-const AuthContext = createContext<AuthContextType>({
-  user: null,
-  session: null,
-  loading: true
-})
+const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
-  const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
-    const supabase = createSupabaseClient()
-
-    // Obtener sesión inicial
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session)
-      setUser(data.session?.user || null)
+    const checkSession = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+      setIsAdmin(user ? isAdminEmail(user.email || '') : false)
       setLoading(false)
-    })
+    }
 
-    // Escuchar cambios de sesión
+    checkSession()
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-      setUser(session?.user || null)
+      if (session?.user) {
+        setUser(session.user)
+        setIsAdmin(isAdminEmail(session.user.email || ''))
+      } else {
+        setUser(null)
+        setIsAdmin(false)
+      }
+      setLoading(false)
     })
 
     return () => {
@@ -43,12 +46,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, session, loading }}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, isAdmin, loading }}>
       {children}
     </AuthContext.Provider>
   )
 }
 
-export function useAuthContext() {
-  return useContext(AuthContext)
+export const useAuthContext = () => {
+  const context = useContext(AuthContext)
+  if (!context) {
+    throw new Error('useAuthContext must be used within an AuthProvider')
+  }
+  return context
 }
