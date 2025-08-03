@@ -142,20 +142,17 @@ export async function getContactInfo(): Promise<ContactInfo[]> {
   }
 }
 
-export async function updateContactInfo(id: string, updates: Partial<ContactInfo>): Promise<ContactInfo> {
-  const { data, error } = await supabase
-    .from('contact_info')
-    .update(updates)
-    .eq('id', id)
-    .select()
-
-  if (error) {
-    console.error('Error updating contact info:', error)
-    throw error
-  }
-
-  return data[0] as ContactInfo
-}
-
 export async function getContactInfoByField(fieldName: string): Promise<ContactInfo | null> {
   const { data, error } = await supabase
+    .from('contact_info')
+    .select('*')
+    .eq('field_name', fieldName)
+    .single()
+
+  if (error) {
+    console.error('Error fetching contact info by field:', error)
+    return null
+  }
+
+  return data as ContactInfo
+}
