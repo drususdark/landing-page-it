@@ -45,6 +45,7 @@ export async function getSession() {
 export function isAdminEmail(email: string): boolean {
   // Buscar en NEXT_PUBLIC_ADMIN_EMAIL (cliente) o ADMIN_EMAIL (servidor)
   const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || process.env.ADMIN_EMAIL || 'admin@example.com'
+  console.log('Comparando:', email, 'con adminEmail:', adminEmail)
   return email === adminEmail
 }
 
