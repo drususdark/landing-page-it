@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { SiteContent, Service, ContactInfo } from '@/lib/supabase'
 import { getSiteContent, getServices, getContactInfo } from '@/lib/database'
 
@@ -7,23 +7,25 @@ export function useSiteContent(section?: string) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    async function fetchContent() {
-      try {
-        setLoading(true)
-        const data = await getSiteContent(section)
-        setContent(data)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Error fetching content')
-      } finally {
-        setLoading(false)
-      }
+  // fetchContent definido con useCallback para evitar recreaciones innecesarias
+  const fetchContent = useCallback(async () => {
+    try {
+      setLoading(true)
+      const data = await getSiteContent(section)
+      setContent(data)
+      setError(null)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error fetching content')
+    } finally {
+      setLoading(false)
     }
-
-    fetchContent()
   }, [section])
 
-  return { content, loading, error, refetch: () => fetchContent() }
+  useEffect(() => {
+    fetchContent()
+  }, [fetchContent])
+
+  return { content, loading, error, refetch: fetchContent }
 }
 
 export function useServices(activeOnly: boolean = true) {
@@ -31,23 +33,24 @@ export function useServices(activeOnly: boolean = true) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    async function fetchServices() {
-      try {
-        setLoading(true)
-        const data = await getServices(activeOnly)
-        setServices(data)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Error fetching services')
-      } finally {
-        setLoading(false)
-      }
+  const fetchServices = useCallback(async () => {
+    try {
+      setLoading(true)
+      const data = await getServices(activeOnly)
+      setServices(data)
+      setError(null)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error fetching services')
+    } finally {
+      setLoading(false)
     }
-
-    fetchServices()
   }, [activeOnly])
 
-  return { services, loading, error, refetch: () => fetchServices() }
+  useEffect(() => {
+    fetchServices()
+  }, [fetchServices])
+
+  return { services, loading, error, refetch: fetchServices }
 }
 
 export function useContactInfo() {
@@ -55,22 +58,22 @@ export function useContactInfo() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    async function fetchContactInfo() {
-      try {
-        setLoading(true)
-        const data = await getContactInfo()
-        setContactInfo(data)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Error fetching contact info')
-      } finally {
-        setLoading(false)
-      }
+  const fetchContactInfo = useCallback(async () => {
+    try {
+      setLoading(true)
+      const data = await getContactInfo()
+      setContactInfo(data)
+      setError(null)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error fetching contact info')
+    } finally {
+      setLoading(false)
     }
-
-    fetchContactInfo()
   }, [])
 
-  return { contactInfo, loading, error, refetch: () => fetchContactInfo() }
-}
+  useEffect(() => {
+    fetchContactInfo()
+  }, [fetchContactInfo])
 
+  return { contactInfo, loading, error, refetch: fetchContactInfo }
+}
