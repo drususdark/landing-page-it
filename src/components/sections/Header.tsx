@@ -36,22 +36,22 @@ export function Header() {
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       isScrolled ? 'bg-white/95 backdrop-blur-sm shadow-lg' : 'bg-transparent'
     }`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
+      <div className="section-container">
+        <div className="flex justify-between items-center py-4 lg:py-6">
           {/* Logo */}
           <div className="flex items-center">
-            <div className="text-2xl font-bold text-gray-900">
+            <div className="text-2xl lg:text-3xl font-bold text-gray-900">
               Técnico<span className="text-red-600">IT</span>
             </div>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-8 lg:space-x-10">
             {navItems.map((item) => (
               <button
                 key={item.href}
                 onClick={() => scrollToSection(item.href)}
-                className="text-gray-700 hover:text-red-600 transition-colors duration-200 font-medium"
+                className="text-gray-700 hover:text-red-600 transition-colors duration-200 font-medium text-base lg:text-lg"
               >
                 {item.label}
               </button>
@@ -60,6 +60,7 @@ export function Header() {
               onClick={() => scrollToSection('contact')}
               variant="primary"
               size="sm"
+              className="ml-4"
             >
               Contactar
             </Button>
@@ -80,25 +81,27 @@ export function Header() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200">
+          <div className="md:hidden py-6 border-t border-gray-200 bg-white/95 backdrop-blur-sm">
             <nav className="flex flex-col space-y-4">
               {navItems.map((item) => (
                 <button
                   key={item.href}
                   onClick={() => scrollToSection(item.href)}
-                  className="text-left text-gray-700 hover:text-red-600 transition-colors duration-200 font-medium py-2"
+                  className="text-left text-gray-700 hover:text-red-600 transition-colors duration-200 font-medium py-3 text-lg"
                 >
                   {item.label}
                 </button>
               ))}
-              <Button
-                onClick={() => scrollToSection('contact')}
-                variant="primary"
-                size="sm"
-                className="w-full mt-4"
-              >
-                Contactar
-              </Button>
+              <div className="pt-4">
+                <Button
+                  onClick={() => scrollToSection('contact')}
+                  variant="primary"
+                  size="sm"
+                  className="w-full"
+                >
+                  Contactar
+                </Button>
+              </div>
             </nav>
           </div>
         )}

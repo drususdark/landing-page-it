@@ -40,21 +40,23 @@ export function Services() {
   }
 
   return (
-    <section id="services" className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="services" className="section-spacing bg-gray-50">
+      <div className="section-container">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-8">
             Servicios Profesionales
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Ofrezco una amplia gama de servicios IT diseñados para mantener tu tecnología funcionando de manera óptima y segura.
-          </p>
+          <div className="text-section">
+            <p className="text-xl text-gray-600 leading-relaxed">
+              Ofrezco una amplia gama de servicios IT diseñados para mantener tu tecnología funcionando de manera óptima y segura.
+            </p>
+          </div>
         </div>
 
         {/* Services Grid */}
         {loading ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="card-grid mb-20">
             {[...Array(6)].map((_, index) => (
               <div key={index} className="bg-white p-8 rounded-2xl shadow-lg animate-pulse">
                 <div className="w-12 h-12 bg-gray-200 rounded-lg mb-6"></div>
@@ -68,7 +70,7 @@ export function Services() {
             ))}
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="card-grid mb-20">
             {services.map((service, index) => {
               const IconComponent = iconMap[service.icon] || Wrench
               
@@ -103,14 +105,16 @@ export function Services() {
         )}
 
         {/* CTA Section */}
-        <div className="mt-16 bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl p-8 md:p-12 text-center">
-          <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">
+        <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl p-8 md:p-12 text-center mb-20">
+          <h3 className="text-2xl md:text-3xl font-bold text-white mb-6">
             ¿No encuentras el servicio que necesitas?
           </h3>
-          <p className="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
-            Cada proyecto es único. Contáctame para discutir tus necesidades específicas y crear una solución personalizada.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="text-section mb-8">
+            <p className="text-gray-300 text-lg leading-relaxed">
+              Cada proyecto es único. Contáctame para discutir tus necesidades específicas y crear una solución personalizada.
+            </p>
+          </div>
+          <div className="button-group">
             <Button
               onClick={() => scrollToSection('contact')}
               variant="primary"
@@ -130,17 +134,19 @@ export function Services() {
         </div>
 
         {/* Process Section */}
-        <div className="mt-20">
-          <div className="text-center mb-12">
-            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+        <div>
+          <div className="text-center mb-16">
+            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
               Mi Proceso de Trabajo
             </h3>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Un enfoque sistemático para garantizar resultados de calidad en cada proyecto.
-            </p>
+            <div className="text-section">
+              <p className="text-gray-600 leading-relaxed">
+                Un enfoque sistemático para garantizar resultados de calidad en cada proyecto.
+              </p>
+            </div>
           </div>
 
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               {
                 step: '01',
@@ -164,13 +170,13 @@ export function Services() {
               }
             ].map((process, index) => (
               <div key={index} className="text-center">
-                <div className="w-16 h-16 bg-red-600 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
+                <div className="w-16 h-16 bg-red-600 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-6">
                   {process.step}
                 </div>
-                <h4 className="text-lg font-semibold text-gray-900 mb-3">
+                <h4 className="text-lg font-semibold text-gray-900 mb-4">
                   {process.title}
                 </h4>
-                <p className="text-gray-600">
+                <p className="text-gray-600 leading-relaxed">
                   {process.description}
                 </p>
               </div>

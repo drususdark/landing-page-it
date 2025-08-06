@@ -122,36 +122,38 @@ export function Contact() {
   ]
 
   return (
-    <section id="contact" className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="contact" className="section-spacing bg-white">
+      <div className="section-container">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-8">
             Contacto
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            {contentLoading ? (
-              <div className="animate-pulse h-6 bg-gray-200 rounded mx-auto w-3/4"></div>
-            ) : (
-              siteContent[0]?.content || 'Estoy disponible para consultas y presupuestos. No dudes en contactarme para discutir cómo puedo ayudarte con tus necesidades tecnológicas.'
-            )}
-          </p>
+          <div className="text-section">
+            <p className="text-xl text-gray-600 leading-relaxed">
+              {contentLoading ? (
+                <div className="animate-pulse h-6 bg-gray-200 rounded mx-auto w-3/4"></div>
+              ) : (
+                siteContent[0]?.content || 'Estoy disponible para consultas y presupuestos. No dudes en contactarme para discutir cómo puedo ayudarte con tus necesidades tecnológicas.'
+              )}
+            </p>
+          </div>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-16">
+        <div className="responsive-grid lg:grid-cols-2">
           {/* Contact Form */}
-          <div className="bg-gray-50 p-8 rounded-2xl">
-            <h3 className="text-2xl font-semibold text-gray-900 mb-6">
+          <div className="bg-gray-50 p-8 lg:p-10 rounded-2xl">
+            <h3 className="text-2xl font-semibold text-gray-900 mb-8">
               Envíame un Mensaje
             </h3>
             
             {isSubmitted ? (
               <div className="text-center py-12">
-                <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
-                <h4 className="text-xl font-semibold text-gray-900 mb-2">
+                <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-6" />
+                <h4 className="text-xl font-semibold text-gray-900 mb-3">
                   ¡Mensaje Enviado!
                 </h4>
-                <p className="text-gray-600">
+                <p className="text-gray-600 leading-relaxed">
                   Gracias por contactarme. Te responderé lo antes posible.
                 </p>
               </div>
@@ -268,12 +270,12 @@ export function Contact() {
           </div>
 
           {/* Contact Information */}
-          <div>
-            <h3 className="text-2xl font-semibold text-gray-900 mb-6">
+          <div className="content-spacing-lg">
+            <h3 className="text-2xl font-semibold text-gray-900 mb-8">
               Información de Contacto
             </h3>
             
-            <div className="space-y-6 mb-8">
+            <div className="space-y-6 mb-10">
               {contactLoading ? (
                 [...Array(4)].map((_, index) => (
                   <div key={index} className="flex items-center animate-pulse">
@@ -291,7 +293,7 @@ export function Contact() {
                       <method.icon className={`h-6 w-6 ${method.color}`} />
                     </div>
                     <div className="flex-1">
-                      <div className="font-medium text-gray-900">{method.label}</div>
+                      <div className="font-medium text-gray-900 mb-1">{method.label}</div>
                       {method.href.startsWith('http') || method.href.startsWith('mailto') || method.href.startsWith('tel') ? (
                         <a
                           href={method.href}
@@ -311,12 +313,12 @@ export function Contact() {
             </div>
 
             {/* Availability */}
-            <div className="bg-gray-50 p-6 rounded-xl mb-8">
-              <div className="flex items-center mb-3">
+            <div className="bg-gray-50 p-6 rounded-xl mb-10">
+              <div className="flex items-center mb-4">
                 <Clock className="h-6 w-6 text-red-600 mr-3" />
                 <h4 className="font-semibold text-gray-900">Horarios de Atención</h4>
               </div>
-              <p className="text-gray-600">
+              <p className="text-gray-600 leading-relaxed">
                 {contactLoading ? (
                   <div className="animate-pulse h-4 bg-gray-200 rounded"></div>
                 ) : (
@@ -327,7 +329,7 @@ export function Contact() {
 
             {/* Social Links */}
             <div>
-              <h4 className="font-semibold text-gray-900 mb-4">Sígueme en Redes</h4>
+              <h4 className="font-semibold text-gray-900 mb-6">Sígueme en Redes</h4>
               <div className="flex space-x-4">
                 {socialLinks.map((social, index) => (
                   social.href && (
