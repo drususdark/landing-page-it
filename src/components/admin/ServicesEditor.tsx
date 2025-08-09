@@ -74,7 +74,8 @@ export function ServicesEditor() {
         const maxOrder = Math.max(...services.map(s => s.order_index), 0)
         await createService({
           ...editData,
-          order_index: maxOrder + 1
+          order_index: maxOrder + 1,
+          is_visible: true
         })
         setMessage({ type: 'success', text: 'Servicio creado exitosamente' })
       } else if (editingId) {
