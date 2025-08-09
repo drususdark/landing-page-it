@@ -111,18 +111,18 @@ export function ServicesEditor() {
   }
 
   const toggleActive = async (service: any) => {
-    try {
-      await updateService(service.id, { active: !service.is_visible })
-      setMessage({ 
-        type: 'success', 
-        text: `Servicio ${!service.is_visible ? 'activado' : 'desactivado'} exitosamente` 
-      })
-      refetch()
-      setTimeout(() => setMessage(null), 3000)
-    } catch (error) {
-      setMessage({ type: 'error', text: 'Error al cambiar el estado del servicio' })
-    }
+  try {
+    await updateService(service.id, { is_visible: !service.is_visible })
+    setMessage({ 
+      type: 'success', 
+      text: `Servicio ${!service.is_visible ? 'activado' : 'desactivado'} exitosamente` 
+    })
+    refetch()
+    setTimeout(() => setMessage(null), 3000)
+  } catch (error) {
+    setMessage({ type: 'error', text: 'Error al cambiar el estado del servicio' })
   }
+}
 
   if (loading) {
     return (
