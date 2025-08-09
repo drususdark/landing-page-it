@@ -37,7 +37,7 @@ export function ServicesEditor() {
       title: service.title,
       description: service.description,
       icon: service.icon,
-      active: service.is_visible
+      is_visible: service.is_visible
     })
     setIsCreating(false)
     setMessage(null)
