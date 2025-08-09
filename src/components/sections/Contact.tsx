@@ -16,7 +16,7 @@ import { Button } from '@/components/ui/Button'
 import { useContactInfo, useSiteContent } from '@/hooks/useContent'
 
 export function Contact() {
-  const { contactInfo, loading: contactLoading } = useContactInfo()
+  const { contactInfo, loading: contactLoading } = useContactInfo(false) // Only visible fields
   const { content: siteContent, loading: contentLoading } = useSiteContent('contact')
   
   const [formData, setFormData] = useState({
@@ -65,51 +65,63 @@ export function Contact() {
     return field?.field_value || ''
   }
 
+  const isFieldVisible = (fieldName: string) => {
+    return contactInfo.some(item => item.field_name === fieldName && item.is_visible)
+  }
+
+  // Only show contact methods that are visible
   const contactMethods = [
     {
       icon: Mail,
       label: 'Email',
       value: getContactValue('email'),
       href: `mailto:${getContactValue('email')}`,
-      color: 'text-blue-600'
+      color: 'text-blue-600',
+      fieldName: 'email'
     },
     {
       icon: Phone,
       label: 'Teléfono',
       value: getContactValue('phone'),
       href: `tel:${getContactValue('phone')}`,
-      color: 'text-green-600'
+      color: 'text-green-600',
+      fieldName: 'phone'
     },
     {
       icon: MessageSquare,
       label: 'WhatsApp',
       value: getContactValue('whatsapp'),
       href: `https://wa.me/${getContactValue('whatsapp')?.replace(/[^0-9]/g, '')}`,
-      color: 'text-green-500'
+      color: 'text-green-500',
+      fieldName: 'whatsapp'
     },
     {
       icon: MapPin,
       label: 'Ubicación',
       value: getContactValue('location'),
       href: '#',
-      color: 'text-red-600'
+      color: 'text-red-600',
+      fieldName: 'location'
     }
-  ]
+  ].filter(method => isFieldVisible(method.fieldName))
 
+  // Only show social links that are visible
   const socialLinks = [
     {
       icon: Linkedin,
       label: 'LinkedIn',
       href: getContactValue('linkedin'),
-      color: 'text-blue-700'
+      color: 'text-blue-700',
+      fieldName: 'linkedin'
     },
     {
       icon: Twitter,
       label: 'Twitter',
       href: getContactValue('twitter'),
-      color: 'text-blue-400'
+      color: 'text-blue-400',
+      fieldName: 'twitter'
     }
-  ]
+  ].filter(social => isFieldVisible(social.fieldName) && social.href)
 
   const services = [
     'Mantenimiento de PC',
@@ -275,64 +287,69 @@ export function Contact() {
               Información de Contacto
             </h3>
             
-            <div className="space-y-6 mb-10">
-              {contactLoading ? (
-                [...Array(4)].map((_, index) => (
-                  <div key={index} className="flex items-center animate-pulse">
-                    <div className="w-12 h-12 bg-gray-200 rounded-lg mr-4"></div>
-                    <div className="flex-1">
-                      <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                      <div className="h-3 bg-gray-200 rounded w-2/3"></div>
+            {/* Contact Methods */}
+            {contactMethods.length > 0 && (
+              <div className="space-y-6 mb-10">
+                {contactLoading ? (
+                  [...Array(4)].map((_, index) => (
+                    <div key={index} className="flex items-center animate-pulse">
+                      <div className="w-12 h-12 bg-gray-200 rounded-lg mr-4"></div>
+                      <div className="flex-1">
+                        <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                        <div className="h-3 bg-gray-200 rounded w-2/3"></div>
+                      </div>
                     </div>
-                  </div>
-                ))
-              ) : (
-                contactMethods.map((method, index) => (
-                  <div key={index} className="flex items-center group">
-                    <div className={`w-12 h-12 ${method.color.replace('text-', 'bg-').replace('-600', '-100').replace('-500', '-100').replace('-700', '-100').replace('-400', '-100')} rounded-lg flex items-center justify-center mr-4 group-hover:scale-110 transition-transform`}>
-                      <method.icon className={`h-6 w-6 ${method.color}`} />
+                  ))
+                ) : (
+                  contactMethods.map((method, index) => (
+                    <div key={index} className="flex items-center group">
+                      <div className={`w-12 h-12 ${method.color.replace('text-', 'bg-').replace('-600', '-100').replace('-500', '-100').replace('-700', '-100').replace('-400', '-100')} rounded-lg flex items-center justify-center mr-4 group-hover:scale-110 transition-transform`}>
+                        <method.icon className={`h-6 w-6 ${method.color}`} />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-900 mb-1">{method.label}</div>
+                        {method.href.startsWith('http') || method.href.startsWith('mailto') || method.href.startsWith('tel') ? (
+                          <a
+                            href={method.href}
+                            target={method.href.startsWith('http') ? '_blank' : undefined}
+                            rel={method.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                            className="text-gray-600 hover:text-red-600 transition-colors"
+                          >
+                            {method.value}
+                          </a>
+                        ) : (
+                          <div className="text-gray-600">{method.value}</div>
+                        )}
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <div className="font-medium text-gray-900 mb-1">{method.label}</div>
-                      {method.href.startsWith('http') || method.href.startsWith('mailto') || method.href.startsWith('tel') ? (
-                        <a
-                          href={method.href}
-                          target={method.href.startsWith('http') ? '_blank' : undefined}
-                          rel={method.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                          className="text-gray-600 hover:text-red-600 transition-colors"
-                        >
-                          {method.value}
-                        </a>
-                      ) : (
-                        <div className="text-gray-600">{method.value}</div>
-                      )}
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
+                  ))
+                )}
+              </div>
+            )}
 
             {/* Availability */}
-            <div className="bg-gray-50 p-6 rounded-xl mb-10">
-              <div className="flex items-center mb-4">
-                <Clock className="h-6 w-6 text-red-600 mr-3" />
-                <h4 className="font-semibold text-gray-900">Horarios de Atención</h4>
+            {isFieldVisible('availability') && (
+              <div className="bg-gray-50 p-6 rounded-xl mb-10">
+                <div className="flex items-center mb-4">
+                  <Clock className="h-6 w-6 text-red-600 mr-3" />
+                  <h4 className="font-semibold text-gray-900">Horarios de Atención</h4>
+                </div>
+                <p className="text-gray-600 leading-relaxed">
+                  {contactLoading ? (
+                    <div className="animate-pulse h-4 bg-gray-200 rounded"></div>
+                  ) : (
+                    getContactValue('availability') || 'Lunes a Viernes: 9:00 AM - 6:00 PM'
+                  )}
+                </p>
               </div>
-              <p className="text-gray-600 leading-relaxed">
-                {contactLoading ? (
-                  <div className="animate-pulse h-4 bg-gray-200 rounded"></div>
-                ) : (
-                  getContactValue('availability') || 'Lunes a Viernes: 9:00 AM - 6:00 PM'
-                )}
-              </p>
-            </div>
+            )}
 
             {/* Social Links */}
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-6">Sígueme en Redes</h4>
-              <div className="flex space-x-4">
-                {socialLinks.map((social, index) => (
-                  social.href && (
+            {socialLinks.length > 0 && (
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-6">Sígueme en Redes</h4>
+                <div className="flex space-x-4">
+                  {socialLinks.map((social, index) => (
                     <a
                       key={index}
                       href={social.href}
@@ -342,10 +359,10 @@ export function Contact() {
                     >
                       <social.icon className={`h-6 w-6 ${social.color}`} />
                     </a>
-                  )
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

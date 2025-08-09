@@ -2,14 +2,17 @@
 
 import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { LogOut, Edit, Save, Plus, Eye } from 'lucide-react'
+import { LogOut, Edit, Save, Plus, Eye, Settings, Search, Shuffle } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { signOut } from '@/lib/auth'
 import { useAuthContext } from '@/context/AuthContext'
 import { ContentEditor } from '@/components/admin/ContentEditor'
 import { ServicesEditor } from '@/components/admin/ServicesEditor'
 import { ContactEditor } from '@/components/admin/ContactEditor'
-import { toast } from 'sonner'  // <-- Importa toast
+import { SectionVisibilityEditor } from '@/components/admin/SectionVisibilityEditor'
+import { ContactFieldsEditor } from '@/components/admin/ContactFieldsEditor'
+import { ServicesReorderEditor } from '@/components/admin/ServicesReorderEditor'
+import { SeoEditor } from '@/components/admin/SeoEditor'
 
 export default function AdminDashboard() {
   const router = useRouter()
@@ -31,11 +34,9 @@ export default function AdminDashboard() {
   const handleSignOut = async () => {
     try {
       await signOut()
-      toast.success('Sesión cerrada correctamente')  // <-- Toast éxito
       router.push('/admin/login')
     } catch (error) {
       console.error('Error signing out:', error)
-      toast.error('Error al cerrar sesión')  // <-- Toast error
     }
   }
 
@@ -58,7 +59,11 @@ export default function AdminDashboard() {
   const tabs = [
     { id: 'content', label: 'Contenido del Sitio', icon: Edit },
     { id: 'services', label: 'Servicios', icon: Plus },
-    { id: 'contact', label: 'Información de Contacto', icon: Save }
+    { id: 'contact', label: 'Información de Contacto', icon: Save },
+    { id: 'visibility', label: 'Control de Visibilidad', icon: Eye },
+    { id: 'contact-fields', label: 'Campos de Contacto', icon: Settings },
+    { id: 'services-order', label: 'Reordenar Servicios', icon: Shuffle },
+    { id: 'seo', label: 'Configuración SEO', icon: Search }
   ]
 
   return (
@@ -100,12 +105,12 @@ export default function AdminDashboard() {
 
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex space-x-8">
+          <nav className="flex space-x-8 overflow-x-auto">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center transition-colors ${
+                className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center transition-colors whitespace-nowrap ${
                   activeTab === tab.id
                     ? 'border-red-500 text-red-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -120,10 +125,79 @@ export default function AdminDashboard() {
       </div>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {activeTab === 'content' && <ContentEditor />}
-        {activeTab === 'services' && <ServicesEditor />}
-        {activeTab === 'contact' && <ContactEditor />}
+        <div className="space-y-8">
+          {activeTab === 'content' && (
+            <div>
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-2">Editar Contenido del Sitio</h2>
+                <p className="text-gray-600">Modifica los textos principales de tu landing page.</p>
+              </div>
+              <ContentEditor />
+            </div>
+          )}
+          
+          {activeTab === 'services' && (
+            <div>
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-2">Gestionar Servicios</h2>
+                <p className="text-gray-600">Añade, edita o elimina los servicios que ofreces.</p>
+              </div>
+              <ServicesEditor />
+            </div>
+          )}
+          
+          {activeTab === 'contact' && (
+            <div>
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-2">Información de Contacto</h2>
+                <p className="text-gray-600">Actualiza tu información de contacto y redes sociales.</p>
+              </div>
+              <ContactEditor />
+            </div>
+          )}
+          
+          {activeTab === 'visibility' && (
+            <div>
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-2">Control de Visibilidad</h2>
+                <p className="text-gray-600">Controla qué secciones se muestran u ocultan en tu landing page.</p>
+              </div>
+              <SectionVisibilityEditor />
+            </div>
+          )}
+          
+          {activeTab === 'contact-fields' && (
+            <div>
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-2">Campos de Contacto</h2>
+                <p className="text-gray-600">Gestiona la visibilidad y contenido de cada campo de contacto individual.</p>
+              </div>
+              <ContactFieldsEditor />
+            </div>
+          )}
+          
+          {activeTab === 'services-order' && (
+            <div>
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-2">Reordenar Servicios</h2>
+                <p className="text-gray-600">Cambia el orden de aparición de tus servicios y controla su visibilidad.</p>
+              </div>
+              <ServicesReorderEditor />
+            </div>
+          )}
+          
+          {activeTab === 'seo' && (
+            <div>
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-2">Configuración SEO</h2>
+                <p className="text-gray-600">Optimiza tu página para motores de búsqueda y redes sociales.</p>
+              </div>
+              <SeoEditor />
+            </div>
+          )}
+        </div>
       </main>
     </div>
   )
 }
+

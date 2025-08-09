@@ -1,5 +1,3 @@
-'use client'
-
 import React from 'react'
 import { 
   Monitor, 
@@ -30,13 +28,18 @@ const iconMap: { [key: string]: React.ComponentType<any> } = {
 }
 
 export function Services() {
-  const { services, loading } = useServices(true)
+  const { services, loading } = useServices(false) // Only get visible services
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId)
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' })
     }
+  }
+
+  // If no visible services, don't render the section
+  if (!loading && services.length === 0) {
+    return null
   }
 
   return (

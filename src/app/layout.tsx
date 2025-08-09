@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
-import { Toaster } from "sonner";  // <-- importá Toaster acá
 
 const inter = Inter({
   subsets: ["latin"],
@@ -10,7 +9,30 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-export const metadata: Metadata = { /* ... lo de antes */ };
+export const metadata: Metadata = {
+  title: "Técnico IT Freelance - Soluciones Profesionales",
+  description: "Servicios de soporte técnico, mantenimiento y consultoría IT para empresas y particulares. Soluciones profesionales adaptadas a tus necesidades.",
+  keywords: "técnico IT, soporte técnico, mantenimiento PC, consultoría IT, freelance, servicios informáticos",
+  authors: [{ name: "Técnico IT" }],
+  creator: "Técnico IT",
+  publisher: "Técnico IT",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -26,9 +48,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${inter.variable} font-sans antialiased`}>
         <AuthProvider>
           {children}
-          <Toaster richColors />  {/* <-- agregalo acá */}
         </AuthProvider>
       </body>
     </html>
   );
 }
+
