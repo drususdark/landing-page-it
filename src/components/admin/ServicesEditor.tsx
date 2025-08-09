@@ -14,7 +14,7 @@ export function ServicesEditor() {
     title: '',
     description: '',
     icon: 'wrench',
-    active: true
+    is_visible: true
   })
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
@@ -37,7 +37,7 @@ export function ServicesEditor() {
       title: service.title,
       description: service.description,
       icon: service.icon,
-      active: service.active
+      active: service.is_visible
     })
     setIsCreating(false)
     setMessage(null)
@@ -50,7 +50,7 @@ export function ServicesEditor() {
       title: '',
       description: '',
       icon: 'wrench',
-      active: true
+      is_visible: true
     })
     setMessage(null)
   }
@@ -62,7 +62,7 @@ export function ServicesEditor() {
       title: '',
       description: '',
       icon: 'wrench',
-      active: true
+      is_visible: true
     })
     setMessage(null)
   }
@@ -74,8 +74,7 @@ export function ServicesEditor() {
         const maxOrder = Math.max(...services.map(s => s.order_index), 0)
         await createService({
           ...editData,
-          order_index: maxOrder + 1,
-          is_visible: true
+          order_index: maxOrder + 1
         })
         setMessage({ type: 'success', text: 'Servicio creado exitosamente' })
       } else if (editingId) {
@@ -113,10 +112,10 @@ export function ServicesEditor() {
 
   const toggleActive = async (service: any) => {
     try {
-      await updateService(service.id, { active: !service.active })
+      await updateService(service.id, { active: !service.is_visible })
       setMessage({ 
         type: 'success', 
-        text: `Servicio ${!service.active ? 'activado' : 'desactivado'} exitosamente` 
+        text: `Servicio ${!service.is_visible ? 'activado' : 'desactivado'} exitosamente` 
       })
       refetch()
       setTimeout(() => setMessage(null), 3000)
@@ -228,12 +227,12 @@ export function ServicesEditor() {
             <div className="flex items-center">
               <input
                 type="checkbox"
-                id="active"
-                checked={editData.active}
-                onChange={(e) => setEditData(prev => ({ ...prev, active: e.target.checked }))}
+                id="is_visible"
+                checked={editData.is_visible}
+                onChange={(e) => setEditData(prev => ({ ...prev, is_visible: e.target.checked }))}
                 className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
               />
-              <label htmlFor="active" className="ml-2 block text-sm text-gray-700">
+              <label htmlFor="is_visible" className="ml-2 block text-sm text-gray-700">
                 Servicio activo (visible en el sitio)
               </label>
             </div>
@@ -273,7 +272,7 @@ export function ServicesEditor() {
       <div className="space-y-4">
         {services.map((service) => (
           <div key={service.id} className={`bg-white p-6 rounded-lg shadow-sm border ${
-            !service.active ? 'border-gray-300 bg-gray-50' : 'border-gray-200'
+            !service.is_visible ? 'border-gray-300 bg-gray-50' : 'border-gray-200'
           }`}>
             {editingId === service.id ? (
               <div className="space-y-4">
@@ -323,12 +322,12 @@ export function ServicesEditor() {
                 <div className="flex items-center">
                   <input
                     type="checkbox"
-                    id={`active-${service.id}`}
-                    checked={editData.active}
-                    onChange={(e) => setEditData(prev => ({ ...prev, active: e.target.checked }))}
+                    id={`is_visible-${service.id}`}
+                    checked={editData.is_visible}
+                    onChange={(e) => setEditData(prev => ({ ...prev, is_visible: e.target.checked }))}
                     className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
                   />
-                  <label htmlFor={`active-${service.id}`} className="ml-2 block text-sm text-gray-700">
+                  <label htmlFor={`is_visible-${service.id}`} className="ml-2 block text-sm text-gray-700">
                     Servicio activo (visible en el sitio)
                   </label>
                 </div>
@@ -366,11 +365,11 @@ export function ServicesEditor() {
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex items-center">
                     <h3 className={`text-lg font-semibold ${
-                      service.active ? 'text-gray-900' : 'text-gray-500'
+                      service.is_visible ? 'text-gray-900' : 'text-gray-500'
                     }`}>
                       {service.title}
                     </h3>
-                    {!service.active && (
+                    {!service.is_visible && (
                       <span className="ml-2 px-2 py-1 text-xs bg-gray-200 text-gray-600 rounded-full">
                         Inactivo
                       </span>
@@ -381,9 +380,9 @@ export function ServicesEditor() {
                       onClick={() => toggleActive(service)}
                       variant="ghost"
                       size="sm"
-                      className={service.active ? 'text-gray-600' : 'text-green-600'}
+                      className={service.is_visible ? 'text-gray-600' : 'text-green-600'}
                     >
-                      {service.active ? (
+                      {service.is_visible ? (
                         <EyeOff className="h-4 w-4" />
                       ) : (
                         <Eye className="h-4 w-4" />
@@ -407,7 +406,7 @@ export function ServicesEditor() {
                   </div>
                 </div>
                 <p className={`text-sm leading-relaxed ${
-                  service.active ? 'text-gray-600' : 'text-gray-500'
+                  service.is_visible ? 'text-gray-600' : 'text-gray-500'
                 }`}>
                   {service.description}
                 </p>
